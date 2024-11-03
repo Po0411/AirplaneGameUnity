@@ -51,19 +51,25 @@ public class Enemy : Actor
     Transform FireTransform;
 
     [SerializeField]
-    GameObject Bullet;
-
-    [SerializeField]
     float BulletSpeed = 1;
 
 
-    float LastBattleUpdateTime = 0.0f;
+    float LastActionUpdateTime = 0.0f;
 
     [SerializeField]
     int FireRemainCount = 1;
 
     [SerializeField]
     int GamePoint = 10;
+
+    public string FilePath
+    {
+        get;
+        set;
+    }
+
+    Vector3 AppearPoint;      // 입장시 도착 위치
+    Vector3 DisappearPoint;      // 퇴장시 목표 위치
 
     // Update is called once per frame
     protected override void UpdateActor()
@@ -72,7 +78,9 @@ public class Enemy : Actor
         switch (CurrentState)
         {
             case State.None:
+                break;
             case State.Ready:
+                UpdateReady();
                 break;
             case State.Dead:
                 break;
@@ -119,12 +127,33 @@ public class Enemy : Actor
         if (CurrentState == State.Appear)
         {
             CurrentState = State.Battle;
-            LastBattleUpdateTime = Time.time;
+            LastActionUpdateTime = Time.time;
         }
         else // if (CurrentState == State.Disappear)
         {
             CurrentState = State.None;
+            SystemManager.Instance.EnemyManager.RemoveEnemy(this);
         }
+    }
+
+    public void Reset(SquadronMemberStruct data)
+    {
+        EnemyStruct enemyStruct = SystemManager.Instance.EnemyTable.GetEnemy(data.EnemyID);
+
+
+
+        CurrentHP = MaxHP = enemyStruct.MaxHP;             // CurrentHP까지 다시 입력
+        Damage = enemyStruct.Damage;                       // 총알 데미지
+        crashDamage = enemyStruct.CrashDamage;             // 충돌 데미지
+        BulletSpeed = enemyStruct.BulletSpeed;             // 총알 속도
+        FireRemainCount = enemyStruct.FireRemainCount;     // 발사할 총알 갯수
+        GamePoint = enemyStruct.GamePoint;                 // 파괴시 얻을 점수
+
+        AppearPoint = new Vector3(data.AppearPointX, data.AppearPointY, 0);             // 입장시 도착 위치 
+        DisappearPoint = new Vector3(data.DisappearPointX, data.DisappearPointY, 0);    // 퇴장시 목표 위치
+
+        CurrentState = State.Ready;
+        LastActionUpdateTime = Time.time;
     }
 
     public void Appear(Vector3 targetPos)
@@ -145,9 +174,17 @@ public class Enemy : Actor
         MoveStartTime = Time.time;
     }
 
+    void UpdateReady()
+    {
+        if (Time.time - LastActionUpdateTime > 1.0f)
+        {
+            Appear(AppearPoint);
+        }
+    }
+
     void UpdateBattle()
     {
-        if (Time.time - LastBattleUpdateTime > 1.0f)
+        if (Time.time - LastActionUpdateTime > 1.0f)
         {
             if (FireRemainCount > 0)
             {
@@ -156,10 +193,10 @@ public class Enemy : Actor
             }
             else
             {
-                Disappear(new Vector3(-15.0f, transform.position.y, transform.position.z));
+                Disappear(DisappearPoint);
             }
 
-            LastBattleUpdateTime = Time.time;
+            LastActionUpdateTime = Time.time;
         }
     }
 
@@ -169,20 +206,24 @@ public class Enemy : Actor
         if (player)
         {
             if (!player.IsDead)
-                player.OnCrash(this, CrashDamage);
+            {
+                BoxCollider box = ((BoxCollider)other);
+                Vector3 crashPos = player.transform.position + box.center;
+                crashPos.x += box.size.x * 0.5f;
+
+                player.OnCrash(this, CrashDamage, crashPos);
+            }
         }
     }
 
-    public override void OnCrash(Actor attacker, int damage)
+    public override void OnCrash(Actor attacker, int damage, Vector3 crashPos)
     {
-        base.OnCrash(attacker, damage);
+        base.OnCrash(attacker, damage, crashPos);
     }
 
     public void Fire()
     {
-        GameObject go = Instantiate(Bullet);
-
-        Bullet bullet = go.GetComponent<Bullet>();
+        Bullet bullet = SystemManager.Instance.BulletManager.Generate(BulletManager.EnemyBulletIndex);
         bullet.Fire(this, FireTransform.position, -FireTransform.right, BulletSpeed, Damage);
     }
 
@@ -191,9 +232,17 @@ public class Enemy : Actor
         base.OnDead(killer);
 
         SystemManager.Instance.GamePointAccumulator.Accumulate(GamePoint);
+        SystemManager.Instance.EnemyManager.RemoveEnemy(this);
 
         CurrentState = State.Dead;
-        Destroy(gameObject);
 
+    }
+
+    protected override void DecreaseHP(Actor attacker, int value, Vector3 damagePos)
+    {
+        base.DecreaseHP(attacker, value, damagePos);
+
+        Vector3 damagePoint = damagePos + Random.insideUnitSphere * 0.5f;
+        SystemManager.Instance.DamageManager.Generate(DamageManager.EnemyDamageIndex, damagePoint, value, Color.magenta);
     }
 }

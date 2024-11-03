@@ -26,10 +26,16 @@ public class Player : Actor
     Transform FireTransform;
 
     [SerializeField]
-    GameObject Bullet;
-
-    [SerializeField]
     float BulletSpeed = 1;
+
+
+
+    protected override void Initialize()
+    {
+        base.Initialize();
+        PlayerStatePanel playerStatePanel = PanelManager.GetPanel(typeof(PlayerStatePanel)) as PlayerStatePanel;
+        playerStatePanel.SetHP(CurrentHP, MaxHP);
+    }
 
     protected override void UpdateActor()
     {
@@ -86,21 +92,35 @@ public class Player : Actor
         if (enemy)
         {
             if (!enemy.IsDead)
-                enemy.OnCrash(this, CrashDamage);
+            {
+                BoxCollider box = ((BoxCollider)other);
+                Vector3 crashPos = enemy.transform.position + box.center;
+                crashPos.x += box.size.x * 0.5f;
+
+                enemy.OnCrash(this, CrashDamage, crashPos);
+            }
         }
     }
 
-    public override void OnCrash(Actor attacker, int damage)
+    public override void OnCrash(Actor attacker, int damage, Vector3 crashPos)
     {
-        base.OnCrash(attacker, damage);
+        base.OnCrash(attacker, damage, crashPos);
     }
 
     public void Fire()
     {
-        GameObject go = Instantiate(Bullet);
-
-        Bullet bullet = go.GetComponent<Bullet>();
+        Bullet bullet = SystemManager.Instance.BulletManager.Generate(BulletManager.PlayerBulletIndex);
         bullet.Fire(this, FireTransform.position, FireTransform.right, BulletSpeed, Damage);
+    }
+
+    protected override void DecreaseHP(Actor attacker, int value, Vector3 damagePos)
+    {
+        base.DecreaseHP(attacker, value, damagePos);
+        PlayerStatePanel playerStatePanel = PanelManager.GetPanel(typeof(PlayerStatePanel)) as PlayerStatePanel;
+        playerStatePanel.SetHP(CurrentHP, MaxHP);
+
+        Vector3 damagePoint = damagePos + Random.insideUnitSphere * 0.5f;
+        SystemManager.Instance.DamageManager.Generate(DamageManager.PlayerDamageIndex, damagePoint, value, Color.red);
     }
 
     protected override void OnDead(Actor killer)
@@ -108,4 +128,5 @@ public class Player : Actor
         base.OnDead(killer);
         gameObject.SetActive(false);
     }
+
 }

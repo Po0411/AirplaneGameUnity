@@ -20,9 +20,11 @@ public class EnemyFactory : MonoBehaviour
 
     }
 
+
     public GameObject Load(string resourcePath)
     {
         GameObject go = null;
+
         if (EnemyFileCache.ContainsKey(resourcePath))   // 캐시 확인
         {
             go = EnemyFileCache[resourcePath];
@@ -40,9 +42,7 @@ public class EnemyFactory : MonoBehaviour
             EnemyFileCache.Add(resourcePath, go);
         }
 
-        // 인스턴스를 해서 반환
-        GameObject InstancedGO = Instantiate<GameObject>(go);
-        return InstancedGO;
+        return go;
     }
 
 }
