@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 5492942522838199988}
   - component: {fileID: 4995565536358481609}
   - component: {fileID: 2850569380886790817}
+  - component: {fileID: 7113113702860026930}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -133,11 +134,10 @@ MonoBehaviour:
   crashDamage: 100
   isDead: 0
   MoveVector: {x: 0, y: 0, z: 0}
+  NetworkIdentity: {fileID: 7113113702860026930}
   Speed: 0
   boxCollider: {fileID: 0}
-  MainBGQuadTransform: {fileID: 0}
   FireTransform: {fileID: 5898068135451976978}
-  Bullet: {fileID: 5545702287374172277, guid: a354486b40724034e95808a036de6cbe, type: 3}
   BulletSpeed: 10
 --- !u!54 &2850569380886790817
 Rigidbody:
@@ -155,6 +155,39 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7113113702860026930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2621129297098888116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8258ea15b8f74c4889ce485d21cbbb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 0
+    i1: 0
+    i2: 0
+    i3: 0
+    i4: 0
+    i5: 0
+    i6: 0
+    i7: 0
+    i8: 0
+    i9: 0
+    i10: 0
+    i11: 0
+    i12: 0
+    i13: 0
+    i14: 0
+    i15: 0
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!1 &2656389487869629634
 GameObject:
   m_ObjectHideFlags: 0
