@@ -7,15 +7,17 @@ using System.Runtime.InteropServices;
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
 public struct EnemyStruct
 {
-    public int index;
+    public int      index;
     [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MarshalTableConstant.charBufferSize)]
-    public string FilePath;
-    public int MaxHP;
-    public int Damage;
-    public int CrashDamage;
-    public int BulletSpeed;
-    public int FireRemainCount;
-    public int GamePoint;
+    public string   FilePath;
+    public int      MaxHP;
+    public int      Damage;
+    public int      CrashDamage;
+    public int      BulletSpeed;
+    public int      FireRemainCount;
+    public int      GamePoint;
+    public float    ItemDropRate;
+    public int      ItemDropID;
 }
 
 public class EnemyTable : TableLoader<EnemyStruct>
@@ -31,7 +33,7 @@ public class EnemyTable : TableLoader<EnemyStruct>
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     protected override void AddData(EnemyStruct data)
@@ -41,7 +43,7 @@ public class EnemyTable : TableLoader<EnemyStruct>
 
     public EnemyStruct GetEnemy(int index)
     {
-        if (!tableDatas.ContainsKey(index))
+        if(!tableDatas.ContainsKey(index))
         {
             Debug.LogError("GetEnemy Error! index = " + index);
             return default(EnemyStruct);

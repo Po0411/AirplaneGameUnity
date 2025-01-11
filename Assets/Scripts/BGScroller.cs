@@ -19,7 +19,7 @@ public class BGScroller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -30,11 +30,11 @@ public class BGScroller : MonoBehaviour
 
     void UpdateScroll()
     {
-        for (int i = 0; i < ScrollDatas.Length; i++)
+        for(int i = 0; i < ScrollDatas.Length; i++)
         {
             SetTextureOffset(ScrollDatas[i]);
         }
-
+        
     }
 
     void SetTextureOffset(BGScrollData scrollData)
@@ -47,5 +47,5 @@ public class BGScroller : MonoBehaviour
 
         scrollData.RenderForScroll.material.SetTextureOffset("_MainTex", Offset);
     }
-
+      
 }

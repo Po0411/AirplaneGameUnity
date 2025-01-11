@@ -14,7 +14,7 @@ public class TableLoader<TMarshalStruct> : MonoBehaviour
     public bool Load()
     {
         TextAsset textAsset = Resources.Load<TextAsset>(FilePath);
-        if (textAsset == null)
+        if(textAsset == null)
         {
             Debug.LogError("Load Failed! filePath = " + FilePath);
             return false;

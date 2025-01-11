@@ -1,19 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class InputController : MonoBehaviour
+public class InputController
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
-    void Update()
+    public void UpdateInput()
     {
-        if (SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().CurrentGameState != InGameSceneMain.GameState.Running)
+        if (SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().CurrentGameState != GameState.Running)
             return;
 
         UpdateKeyboard();
@@ -54,5 +49,11 @@ public class InputController : MonoBehaviour
         {
             SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().Hero.Fire();
         }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().Hero.FireBomb();
+        }
+
     }
 }

@@ -16,7 +16,7 @@ public class Gage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public void SetHP(float currentValue, float maxValue)

@@ -10,6 +10,14 @@ public class DamageManager : MonoBehaviour
     [SerializeField]
     Transform canvasTransform;
 
+    public Transform CanvasTransform
+    {
+        get
+        {
+            return canvasTransform;
+        }
+    }
+
     [SerializeField]
     Canvas canvas;
 
@@ -28,7 +36,7 @@ public class DamageManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public GameObject Load(string resourcePath)
@@ -73,10 +81,7 @@ public class DamageManager : MonoBehaviour
         }
 
         string filePath = Files[index].filePath;
-        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().DamageCacheSystem.Archive(filePath);
-        //go.transform.position = position;
-        go.transform.position = Camera.main.WorldToScreenPoint(position);
-
+        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().DamageCacheSystem.Archive(filePath, Camera.main.WorldToScreenPoint(position));
 
         UIDamage damage = go.GetComponent<UIDamage>();
         damage.FilePath = filePath;

@@ -7,6 +7,7 @@ public class EffectManager : MonoBehaviour
 
     public const int BulletDisappearFxIndex = 0;
     public const int ActorDeadFxIndex = 1;
+    public const int BombExplodeFxIndex = 2;
 
     [SerializeField]
     PrefabCacheData[] effectFiles;
@@ -22,20 +23,19 @@ public class EffectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public GameObject GenerateEffect(int index, Vector3 position)
     {
-        if (index < 0 || index >= effectFiles.Length)
+        if(index < 0 || index >= effectFiles.Length)
         {
             Debug.LogError("GenerateEffect error! out of range! index = " + index);
             return null;
         }
 
         string filePath = effectFiles[index].filePath;
-        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EffectCacheSystem.Archive(filePath);
-        go.transform.position = position;
+        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EffectCacheSystem.Archive(filePath, position);
 
         AutoCachableEffect effect = go.GetComponent<AutoCachableEffect>();
         effect.FilePath = filePath;
@@ -72,7 +72,7 @@ public class EffectManager : MonoBehaviour
         for (int i = 0; i < effectFiles.Length; i++)
         {
             GameObject go = Load(effectFiles[i].filePath);
-            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EffectCacheSystem.GenerateCache(effectFiles[i].filePath, go, effectFiles[i].cacheCount);
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EffectCacheSystem.GenerateCache(effectFiles[i].filePath, go, effectFiles[i].cacheCount, this.transform);
         }
     }
 

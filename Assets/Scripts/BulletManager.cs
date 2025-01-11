@@ -6,6 +6,9 @@ public class BulletManager : MonoBehaviour
 {
     public const int PlayerBulletIndex = 0;
     public const int EnemyBulletIndex = 1;
+    public const int PlayerBombIndex = 2;
+    public const int BossBulletIndex = 3;
+    public const int GuidedMissileIndex = 4;
 
     [SerializeField]
     PrefabCacheData[] bulletFiles;
@@ -16,13 +19,12 @@ public class BulletManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Prepare();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public GameObject Load(string resourcePath)
@@ -51,26 +53,34 @@ public class BulletManager : MonoBehaviour
 
     public void Prepare()
     {
+        if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+            return;
+
         for (int i = 0; i < bulletFiles.Length; i++)
         {
             GameObject go = Load(bulletFiles[i].filePath);
-            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.GenerateCache(bulletFiles[i].filePath, go, bulletFiles[i].cacheCount);
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.GenerateCache(bulletFiles[i].filePath, go, bulletFiles[i].cacheCount, this.transform);
         }
     }
 
-    public Bullet Generate(int index)
+    public Bullet Generate(int index, Vector3 position)
     {
+        if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+            return null;
+
         string filePath = bulletFiles[index].filePath;
-        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.Archive(filePath);
+        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.Archive(filePath, position);
 
         Bullet bullet = go.GetComponent<Bullet>();
-        bullet.FilePath = filePath;
 
         return bullet;
     }
 
     public bool Remove(Bullet bullet)
     {
+        if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+            return true;
+
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.Restore(bullet.FilePath, bullet.gameObject);
         return true;
     }

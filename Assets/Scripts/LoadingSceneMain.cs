@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 public class LoadingSceneMain : BaseSceneMain
 {
-    const float NextSceneIntaval = 3.0f;
+    /// <summary>
+    /// 다음 Scene 이동전 대기시간
+    /// </summary>
+    const float NextSceneIntaval = 0.5f;
     const float TextUpdateIntaval = 0.15f;
     const string LoadingTextValue = "Loading...";
 
@@ -28,13 +31,13 @@ public class LoadingSceneMain : BaseSceneMain
         base.UpdateScene();
 
         float currentTime = Time.time;
-        if (currentTime - LastUpdateTime > TextUpdateIntaval)
+        if(currentTime - LastUpdateTime > TextUpdateIntaval)
         {
 
             LoadingText.text = LoadingTextValue.Substring(0, TextIndex + 1);
 
             TextIndex++;
-            if (TextIndex >= LoadingTextValue.Length)
+            if(TextIndex >= LoadingTextValue.Length)
             {
                 TextIndex = 0;
             }
@@ -43,17 +46,31 @@ public class LoadingSceneMain : BaseSceneMain
             LastUpdateTime = currentTime;
         }
         //
-        if (currentTime - SceneStartTime > NextSceneIntaval)
+        if(currentTime - SceneStartTime > NextSceneIntaval)
         {
-            if (!NextSceneCall)
+            if(!NextSceneCall)
                 GotoNextScene();
         }
     }
 
     void GotoNextScene()
     {
-        //SceneController.Instance.LoadScene(SceneNameConstants.InGame);
-        FWNetworkManager.singleton.StartHost();
+        NetworkConnectionInfo info = SystemManager.Instance.ConnectionInfo;
+        if (info.Host)
+        {
+            FWNetworkManager.singleton.StartHost();
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(info.IPAddress))
+                FWNetworkManager.singleton.networkAddress = info.IPAddress;
+
+            if (info.Port != FWNetworkManager.singleton.networkPort)
+                FWNetworkManager.singleton.networkPort = info.Port;
+
+            FWNetworkManager.singleton.StartClient();
+        }
+
         NextSceneCall = true;
     }
 

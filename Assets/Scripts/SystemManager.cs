@@ -29,6 +29,28 @@ public class SystemManager : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    ItemTable itemTable;
+
+    public ItemTable ItemTable
+    {
+        get
+        {
+            return itemTable;
+        }
+    }
+
+    [SerializeField]
+    ItemDropTable itemDropTable;
+
+    public ItemDropTable ItemDropTable
+    {
+        get
+        {
+            return itemDropTable;
+        }
+    }
+
     BaseSceneMain currentSceneMain;
 
     public BaseSceneMain CurrentSceneMain
@@ -39,11 +61,21 @@ public class SystemManager : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    NetworkConnectionInfo connectionInfo = new NetworkConnectionInfo();
+
+    public NetworkConnectionInfo ConnectionInfo
+    {
+        get
+        {
+            return connectionInfo;
+        }
+    }
 
     void Awake()
     {
         // 유일하게 존재할 수 있도록 에러 처리
-        if (instance != null)
+        if(instance != null)
         {
             Debug.LogError("SystemManager is initialized twice!");
             Destroy(gameObject);
@@ -61,7 +93,6 @@ public class SystemManager : MonoBehaviour
     {
 
         BaseSceneMain baseSceneMain = GameObject.FindObjectOfType<BaseSceneMain>();
-        Debug.Log("OnSceneLoaded ! baseSceneMain.name = " + baseSceneMain.name);
         SystemManager.Instance.CurrentSceneMain = baseSceneMain;
 
     }
@@ -69,7 +100,7 @@ public class SystemManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public T GetCurrentSceneMain<T>()

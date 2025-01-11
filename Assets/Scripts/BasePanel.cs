@@ -12,13 +12,13 @@ public class BasePanel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        UpdatePanel();
     }
 
     private void OnDestroy()
@@ -29,6 +29,11 @@ public class BasePanel : MonoBehaviour
     public virtual void InitializePanel()
     {
         PanelManager.RegistPanel(GetType(), this);
+    }
+
+    public virtual void UpdatePanel()
+    {
+
     }
 
     public virtual void DestroyPanel()

@@ -37,7 +37,7 @@ public class UIDamage : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -72,14 +72,14 @@ public class UIDamage : MonoBehaviour
             case DamageState.SizeUp:
                 transform.localScale = Vector3.SmoothDamp(transform.localScale, Vector3.one, ref CurrentVelocity, SizeUpDuration);
 
-                if (transform.localScale == Vector3.one)
+                if(transform.localScale == Vector3.one)
                 {
                     damageState = DamageState.Display;
                     DisplayStartTime = Time.time;
                 }
                 break;
             case DamageState.Display:
-                if (Time.time - DisplayStartTime > DisplayDuration)
+                if(Time.time - DisplayStartTime > DisplayDuration)
                 {
                     damageState = DamageState.FadeOut;
                     FadeOutStartTime = Time.time;
@@ -90,7 +90,7 @@ public class UIDamage : MonoBehaviour
                 newColor.a = Mathf.Lerp(1, 0, (Time.time - FadeOutStartTime) / FadeOutDuration);
                 damageText.color = newColor;
 
-                if (newColor.a == 0)
+                if(newColor.a == 0)
                 {
                     damageState = DamageState.None;
                     SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().DamageManager.Remove(this);

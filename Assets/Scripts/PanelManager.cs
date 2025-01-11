@@ -10,13 +10,13 @@ public class PanelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public static bool RegistPanel(Type PanelClassType, BasePanel basePanel)
@@ -26,8 +26,6 @@ public class PanelManager : MonoBehaviour
             Debug.LogError("RegistPanel Error! Already exist Type! PanelClassType = " + PanelClassType.ToString());
             return false;
         }
-
-        Debug.Log("RegistPanel is called! Type = " + PanelClassType.ToString() + ", basePanel = " + basePanel.name);
 
         Panels.Add(PanelClassType, basePanel);
         return true;
@@ -47,7 +45,7 @@ public class PanelManager : MonoBehaviour
 
     public static BasePanel GetPanel(Type PanelClassType)
     {
-        if (!Panels.ContainsKey(PanelClassType))
+        if(!Panels.ContainsKey(PanelClassType))
         {
             Debug.LogError("GetPanel Error! Can't Find Type! PanelClassType = " + PanelClassType.ToString());
             return null;

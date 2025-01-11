@@ -11,13 +11,13 @@ public class EnemyFactory : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
 
@@ -25,7 +25,7 @@ public class EnemyFactory : MonoBehaviour
     {
         GameObject go = null;
 
-        if (EnemyFileCache.ContainsKey(resourcePath))   // 캐시 확인
+        if(EnemyFileCache.ContainsKey(resourcePath))   // 캐시 확인
         {
             go = EnemyFileCache[resourcePath];
         }
@@ -33,7 +33,7 @@ public class EnemyFactory : MonoBehaviour
         {
             // 캐시에 없으므로 로드
             go = Resources.Load<GameObject>(resourcePath);
-            if (!go)
+            if(!go)
             {
                 Debug.LogError("Load error! path = " + resourcePath);
                 return null;
